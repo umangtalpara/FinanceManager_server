@@ -80,6 +80,10 @@ exports.updateTransaction = async (transactionId, updateData, userId) => {
         throw new Error('Not authorized to update this transaction');
     }
 
+    if (updateData.categoryId === '') {
+        updateData.categoryId = null;
+    }
+
     // Adjust budget if amount changed and it was a Debit/Expectation
     if ((transaction.type === 'Debit' || transaction.type === 'Expectation') && updateData.amount) {
         const diff = Number(updateData.amount) - transaction.amount;
