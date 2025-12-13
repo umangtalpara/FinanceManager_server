@@ -54,3 +54,18 @@ exports.assignMembers = async (projectId, { projectLeadId, assignedMembers }) =>
     await project.save();
     return project;
 };
+
+exports.updateProject = async (projectId, updates) => {
+    const project = await Project.findById(projectId);
+    if (!project) throw new Error('Project not found');
+
+    const allowedUpdates = ['name', 'totalBudget', 'approvalRequired', 'projectLeadId'];
+    allowedUpdates.forEach(update => {
+        if (updates[update] !== undefined) {
+            project[update] = updates[update];
+        }
+    });
+
+    await project.save();
+    return project;
+};

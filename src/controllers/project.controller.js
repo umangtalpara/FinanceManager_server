@@ -49,3 +49,16 @@ exports.assignMembers = async (req, res) => {
         res.status(500).send('Server error');
     }
 };
+
+exports.updateProject = async (req, res) => {
+    try {
+        const project = await projectService.updateProject(req.params.id, req.body);
+        res.json(project);
+    } catch (err) {
+        console.error(err.message);
+        if (err.message === 'Project not found') {
+            return res.status(404).json({ message: 'Project not found' });
+        }
+        res.status(500).send('Server error');
+    }
+};
