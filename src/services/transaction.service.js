@@ -26,7 +26,7 @@ exports.createTransaction = async (transactionData, userId) => {
         description,
         date: date || Date.now(),
         status: type === 'Expectation' ? 'Pending' : 'Approved',
-        categoryId,
+        categoryId: categoryId || undefined, // Handle empty string
         isRecurring,
         recurringFrequency
     });
