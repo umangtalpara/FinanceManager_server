@@ -59,7 +59,7 @@ exports.updateProject = async (projectId, updates) => {
     const project = await Project.findById(projectId);
     if (!project) throw new Error('Project not found');
 
-    const allowedUpdates = ['name', 'totalBudget', 'approvalRequired', 'projectLeadId'];
+    const allowedUpdates = ['name', 'totalBudget', 'approvalRequired', 'projectLeadId', 'assignedMembers'];
     allowedUpdates.forEach(update => {
         if (updates[update] !== undefined) {
             project[update] = updates[update];

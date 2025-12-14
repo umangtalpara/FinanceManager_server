@@ -22,7 +22,10 @@ exports.createOrg = async (name, currency, userId) => {
 
 exports.getOrgs = async (userId) => {
     const members = await OrgMember.find({ userId }).populate('orgId');
-    return members.map(member => member.orgId);
+    return members.map(member => ({
+        ...member.orgId.toObject(),
+        currentUserRole: member.role
+    }));
 };
 
 exports.getOrgById = async (orgId) => {
