@@ -8,9 +8,12 @@ exports.updateStatus = async (transactionId, status, userId) => {
         throw new Error('Transaction not found');
     }
 
-    // Verify user permissions (Lead or Admin)
+    // Verify user permissions (Lead, Admin, or Project Lead)
     const member = await OrgMember.findOne({ userId, orgId: transaction.projectId.orgId });
-    if (!member || (member.role !== 'Admin' && member.role !== 'Lead')) {
+    
+    const isProjectLead = transaction.projectId.projectLeadId && member && transaction.projectId.projectLeadId.toString() === member._id.toString();
+
+    if (!member || (member.role !== 'Admin' && member.role !== 'Lead' && !isProjectLead)) {
         throw new Error('Not authorized to approve/settle');
     }
 

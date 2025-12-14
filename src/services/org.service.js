@@ -92,3 +92,39 @@ exports.removeMember = async (orgId, memberId) => {
     await OrgMember.findByIdAndDelete(memberId);
     return { message: 'Member removed successfully' };
 };
+
+exports.updateMember = async (orgId, memberId, updates) => {
+    const member = await OrgMember.findOne({ _id: memberId, orgId });
+    if (!member) {
+        throw new Error('Member not found');
+    }
+
+    if (updates.role) member.role = updates.role;
+    if (updates.status) member.status = updates.status;
+    await member.save();
+
+    // Update User details if provided
+    if (updates.fullName || updates.email || updates.password) {
+        const User = require('../models/User');
+        const user = await User.findById(member.userId);
+        if (user) {
+            if (updates.fullName) user.fullName = updates.fullName;
+            if (updates.email) {
+                // Check uniqueness only if email is changing
+                if (user.email !== updates.email) {
+                    const existingUser = await User.findOne({ email: updates.email });
+                    if (existingUser) throw new Error('Email already in use');
+                    user.email = updates.email;
+                }
+            }
+            if (updates.password && updates.password.trim() !== '') {
+                const bcrypt = require('bcryptjs');
+                const salt = await bcrypt.genSalt(10);
+                user.passwordHash = await bcrypt.hash(updates.password, salt);
+            }
+            await user.save();
+        }
+    }
+
+    return member;
+};

@@ -72,3 +72,20 @@ exports.removeMember = async (req, res) => {
         res.status(500).send('Server error');
     }
 };
+
+exports.updateMember = async (req, res) => {
+    try {
+        const { role, status, fullName, email, password } = req.body;
+        const member = await orgService.updateMember(req.params.id, req.params.memberId, { role, status, fullName, email, password });
+        res.json(member);
+    } catch (err) {
+        console.error(err.message);
+        if (err.message === 'Member not found') {
+            return res.status(404).json({ message: err.message });
+        }
+        if (err.message === 'Email already in use') {
+            return res.status(400).json({ message: err.message });
+        }
+        res.status(500).send('Server error');
+    }
+};

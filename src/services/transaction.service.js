@@ -25,7 +25,7 @@ exports.createTransaction = async (transactionData, userId) => {
         createdByMemberId: member._id,
         description,
         date: date || Date.now(),
-        status: type === 'Expectation' ? 'Pending' : 'Approved',
+        status: (type === 'Expectation' || (type === 'Debit' && project.approvalRequired)) ? 'Pending' : 'Approved',
         categoryId: categoryId || undefined, // Handle empty string
         isRecurring,
         recurringFrequency

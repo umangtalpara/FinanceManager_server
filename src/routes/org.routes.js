@@ -9,5 +9,6 @@ router.get('/:id', auth, orgController.getOrgById);
 router.get('/:id/members', auth, orgController.getOrgMembers);
 router.post('/:id/members', auth, orgController.addMember);
 router.delete('/:id/members/:memberId', auth, orgController.removeMember);
+router.put('/:id/members/:memberId', auth, orgController.updateMember);
 
 module.exports = router;
