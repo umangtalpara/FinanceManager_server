@@ -57,3 +57,13 @@ exports.resetPassword = async (req, res) => {
         res.status(500).send('Server error');
     }
 };
+
+exports.getMe = async (req, res) => {
+    try {
+        const user = await authService.getMe(req.user.id);
+        res.json(user);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send('Server error');
+    }
+};

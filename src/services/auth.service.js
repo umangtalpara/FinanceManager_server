@@ -124,3 +124,11 @@ exports.resetPassword = async (email, otp, newPassword) => {
 
     return { message: 'Password reset successful' };
 };
+
+exports.getMe = async (userId) => {
+    const user = await User.findById(userId).select('-passwordHash -otp -otpExpires');
+    if (!user) {
+        throw new Error('User not found');
+    }
+    return user;
+};

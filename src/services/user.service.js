@@ -25,3 +25,20 @@ exports.adminChangePassword = async (adminId, userId, orgId, newPassword) => {
 
     return { message: 'Password updated successfully' };
 };
+
+exports.updateProfile = async (userId, { fullName, email, password }) => {
+    const user = await User.findById(userId);
+    if (!user) {
+        throw new Error('User not found');
+    }
+
+    if (fullName) user.fullName = fullName;
+    if (email) user.email = email;
+    if (password) {
+        const salt = await bcrypt.genSalt(10);
+        user.passwordHash = await bcrypt.hash(password, salt);
+    }
+
+    await user.save();
+    return { id: user._id, fullName: user.fullName, email: user.email };
+};
